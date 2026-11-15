@@ -1,0 +1,24 @@
+# Secrets
+.env
+.env/
+*.pem
+
+# Packages
+.build/
+build/
+Package.resolved
+*.xcodeproj/
+.swiftpm/
+
+# Data
+*.mp4
+*.mkv
+*.mov
+
+# Cache
+.DS_Store
+__pycache__/
+
+# Agent work notes
+.codex/
+.claude/
