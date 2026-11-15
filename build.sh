@@ -21,10 +21,18 @@ IDENTITY="${HUSH_SIGN_IDENTITY:-$(cat .signing-identity 2>/dev/null || true)}"
 codesign --force --sign "${IDENTITY:--}" "$APP"
 echo "Built $APP"
 
-# Keep the installed copy current (it is the default video player), unless it is running.
+# Keep the installed copy current (it is the default video player). A running copy is quit
+# gracefully first, so mpv still writes the resume position of whatever was playing.
 if [[ -d /Applications/Hush.app ]]; then
     if pgrep -f "/Applications/Hush.app/Contents/MacOS/Hush" >/dev/null; then
-        echo "Hush is running; quit it and rerun to update /Applications/Hush.app"
+        osascript -e 'tell application id "com.pland.hush" to quit' >/dev/null 2>&1 || true
+        for _ in {1..50}; do
+            pgrep -f "/Applications/Hush.app/Contents/MacOS/Hush" >/dev/null || break
+            sleep 0.1
+        done
+    fi
+    if pgrep -f "/Applications/Hush.app/Contents/MacOS/Hush" >/dev/null; then
+        echo "Hush did not quit; /Applications/Hush.app was not updated"
     else
         rm -rf /Applications/Hush.app && ditto "$APP" /Applications/Hush.app
         LSR=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
