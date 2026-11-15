@@ -269,24 +269,67 @@ final class ChipButton: NSButton {
 }
 
 /// Recently played local files, newest first (our own list: the system recent-documents
-/// list ignores apps that don't use NSDocument).
+/// list ignores apps that don't use NSDocument). Files inside excluded folders are never
+/// recorded or shown.
 enum RecentFiles {
     private static let key = "recentFiles"
+    private static let excludedKey = "recentExcludedFolders"
     private static let limit = 20
+    /// Posted when the list or the excluded folders change.
+    static let changed = Notification.Name("HushRecentFilesChanged")
 
     static var all: [URL] {
-        (UserDefaults.standard.stringArray(forKey: key) ?? []).map { URL(fileURLWithPath: $0) }
+        stored.filter { !isExcluded($0) }.map { URL(fileURLWithPath: $0) }
     }
 
     static func add(_ url: URL) {
-        guard url.isFileURL else { return }
-        var paths = UserDefaults.standard.stringArray(forKey: key) ?? []
+        guard url.isFileURL, !isExcluded(url.path) else { return }
+        var paths = stored
         paths.removeAll { $0 == url.path }
         paths.insert(url.path, at: 0)
         UserDefaults.standard.set(Array(paths.prefix(limit)), forKey: key)
+        NotificationCenter.default.post(name: changed, object: nil)
     }
 
-    static func clear() { UserDefaults.standard.removeObject(forKey: key) }
+    static func clear() {
+        UserDefaults.standard.removeObject(forKey: key)
+        NotificationCenter.default.post(name: changed, object: nil)
+    }
+
+    private static var stored: [String] { UserDefaults.standard.stringArray(forKey: key) ?? [] }
+
+    // MARK: Excluded folders
+
+    static var excludedFolders: [String] { UserDefaults.standard.stringArray(forKey: excludedKey) ?? [] }
+
+    /// Adds a folder and drops any already-recorded files inside it.
+    static func exclude(folder: URL) {
+        let path = normalized(folder.path)
+        var folders = excludedFolders
+        guard !folders.contains(where: { normalized($0) == path }) else { return }
+        folders.append(path)
+        UserDefaults.standard.set(folders, forKey: excludedKey)
+        UserDefaults.standard.set(stored.filter { !isExcluded($0) }, forKey: key)
+        NotificationCenter.default.post(name: changed, object: nil)
+    }
+
+    static func unexclude(folder path: String) {
+        UserDefaults.standard.set(excludedFolders.filter { $0 != path }, forKey: excludedKey)
+        NotificationCenter.default.post(name: changed, object: nil)
+    }
+
+    static func isExcluded(_ path: String) -> Bool {
+        let file = normalized(path)
+        return excludedFolders.contains { folder in
+            let f = normalized(folder)
+            return file == f || file.hasPrefix(f.hasSuffix("/") ? f : f + "/")
+        }
+    }
+
+    /// Absolute, symlink-free, lowercased (APFS volumes are case-insensitive by default).
+    private static func normalized(_ path: String) -> String {
+        URL(fileURLWithPath: path).standardizedFileURL.resolvingSymlinksInPath().path.lowercased()
+    }
 }
 
 /// Seek step for ← / → and the rewind / forward buttons; one setting shared by all windows.

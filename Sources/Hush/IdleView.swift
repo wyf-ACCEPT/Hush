@@ -51,6 +51,9 @@ final class IdleView: NSView {
         scroll.documentView = cardsHost
         strip.addSubview(scroll)
 
+        NotificationCenter.default.addObserver(self, selector: #selector(recentsChanged),
+                                               name: RecentFiles.changed, object: nil)
+
         emptyLabel.font = .systemFont(ofSize: 12)
         emptyLabel.textColor = NSColor(white: 1, alpha: 0.3)
         strip.addSubview(emptyLabel)
@@ -83,7 +86,11 @@ final class IdleView: NSView {
         hint.frame = NSRect(x: 20, y: (zoneY - 34).rounded(), width: max(w - 40, 0), height: 20)
     }
 
-    /// Rebuilds the recent strip from the system's recent-documents list.
+    @objc private func recentsChanged() {
+        if !isHidden { reloadRecents() }
+    }
+
+    /// Rebuilds the recent strip from RecentFiles.
     func reloadRecents() {
         cards.forEach { $0.removeFromSuperview() }
         let urls = RecentFiles.all

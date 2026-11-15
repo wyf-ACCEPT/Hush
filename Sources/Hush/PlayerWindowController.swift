@@ -477,8 +477,79 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         menu.addItem(actionItem("打开网址…", #selector(openURL(_:))))
         menu.addItem(actionItem("新建窗口", #selector(AppDelegate.newWindow(_:)), target: NSApp.delegate))
         menu.addItem(.separator())
+        let excludedItem = NSMenuItem(title: "最近播放黑名单", action: nil, keyEquivalent: "")
+        excludedItem.submenu = excludedFoldersMenu()
+        menu.addItem(excludedItem)
+        menu.addItem(.separator())
         menu.addItem(actionItem("键盘快捷键", #selector(showShortcuts(_:))))
         popUp(menu, from: content.controlBar.settingsButton)
+    }
+
+    /// Folders whose videos never show up in the recent lists.
+    private func excludedFoldersMenu() -> NSMenu {
+        let menu = NSMenu()
+        menu.autoenablesItems = false
+        let header = NSMenuItem(title: "这些文件夹里的视频不会出现在最近播放", action: nil, keyEquivalent: "")
+        header.isEnabled = false
+        menu.addItem(header)
+        let folders = RecentFiles.excludedFolders
+        if folders.isEmpty {
+            let none = NSMenuItem(title: "（空）", action: nil, keyEquivalent: "")
+            none.isEnabled = false
+            menu.addItem(none)
+        }
+        for folder in folders {
+            let item = NSMenuItem(title: (folder as NSString).abbreviatingWithTildeInPath, action: nil, keyEquivalent: "")
+            item.image = NSWorkspace.shared.icon(forFile: folder)
+            item.image?.size = NSSize(width: 16, height: 16)
+            let sub = NSMenu()
+            sub.autoenablesItems = false
+            let reveal = actionItem("在 Finder 中显示", #selector(revealExcludedFolder(_:)))
+            reveal.representedObject = folder
+            sub.addItem(reveal)
+            let remove = actionItem("移出黑名单", #selector(removeExcludedFolder(_:)))
+            remove.representedObject = folder
+            sub.addItem(remove)
+            item.submenu = sub
+            menu.addItem(item)
+        }
+        menu.addItem(.separator())
+        if let url = window?.representedURL, !RecentFiles.isExcluded(url.path) {
+            let current = actionItem("加入当前视频所在的文件夹", #selector(excludeCurrentFolder(_:)))
+            current.toolTip = url.deletingLastPathComponent().path
+            menu.addItem(current)
+        }
+        menu.addItem(actionItem("添加文件夹…", #selector(addExcludedFolder(_:))))
+        return menu
+    }
+
+    @objc func excludeCurrentFolder(_ sender: Any?) {
+        guard let url = window?.representedURL else { return }
+        RecentFiles.exclude(folder: url.deletingLastPathComponent())
+    }
+
+    @objc func addExcludedFolder(_ sender: Any?) {
+        guard let window else { return }
+        let panel = NSOpenPanel()
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = true
+        panel.prompt = "加入黑名单"
+        panel.message = "选中的文件夹（含子文件夹）里的视频不会出现在最近播放"
+        panel.beginSheetModal(for: window) { response in
+            guard response == .OK else { return }
+            panel.urls.forEach { RecentFiles.exclude(folder: $0) }
+        }
+    }
+
+    @objc func revealExcludedFolder(_ sender: NSMenuItem) {
+        guard let path = sender.representedObject as? String else { return }
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: path)
+    }
+
+    @objc func removeExcludedFolder(_ sender: NSMenuItem) {
+        guard let path = sender.representedObject as? String else { return }
+        RecentFiles.unexclude(folder: path)
     }
 
     private func addTrackItems(to menu: NSMenu, type: String, offTitle: String?) {
