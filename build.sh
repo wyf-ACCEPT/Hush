@@ -14,7 +14,11 @@ cp Resources/Info.plist "$APP/Contents/Info.plist"
 cp Resources/input.conf "$APP/Contents/Resources/input.conf"
 [[ -f Resources/AppIcon.icns ]] && cp Resources/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 
-codesign --force --sign - "$APP"
+# Sign with a stable identity so privacy grants (e.g. access to Downloads) survive rebuilds;
+# an ad-hoc signature changes on every build and macOS asks again. Put the SHA-1 of a
+# codesigning certificate in .signing-identity (untracked) or HUSH_SIGN_IDENTITY.
+IDENTITY="${HUSH_SIGN_IDENTITY:-$(cat .signing-identity 2>/dev/null || true)}"
+codesign --force --sign "${IDENTITY:--}" "$APP"
 echo "Built $APP"
 
 # Keep the installed copy current (it is the default video player), unless it is running.
