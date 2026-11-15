@@ -1,0 +1,71 @@
+.gitignore
+  s_fa8b24f57b3de4::t_846fb84a3a5be0 1-24
+README.md
+  s_fa8b24f57b3de4::t_4f078184a95b1b 1-63
+Resources/input.conf
+  s_fa8b24f57b3de4::t_e961f4a3d29d85 1-18
+Sources/Hush/AppDelegate.swift
+  s_fa8b24f57b3de4::t_d6c0a9d9b4fd9a 1-243
+Sources/Hush/ControlBar.swift
+  s_fa8b24f57b3de4::t_83de058c576b6b 1-272
+Sources/Hush/IdleView.swift
+  s_fa8b24f57b3de4::t_7827c7637840e2 1-240
+Sources/Hush/MPVController.swift
+  s_fa8b24f57b3de4::t_9547524937e039 1-412
+Sources/Hush/Menu.swift
+  s_fa8b24f57b3de4::t_675127c813d119 1-120
+Sources/Hush/PlayerWindowController.swift
+  s_fa8b24f57b3de4::t_000735b996fbea 1-629
+Sources/Hush/SpeedPanel.swift
+  s_b7be95dc006347::t_46abb8c83e7ec3 1-130
+Sources/Hush/Theme.swift
+  s_fa8b24f57b3de4::t_6b3d8503261929 1-317
+Sources/Hush/Thumbnailer.swift
+  s_fa8b24f57b3de4::t_313c0cf4e406e3 1-360
+Sources/Hush/VideoLayer.swift
+  s_fa8b24f57b3de4::t_76e699f399e968 1-180
+Sources/Hush/VideoView.swift
+  s_fa8b24f57b3de4::t_f092363c85f13d 1-150
+build.sh
+  s_fa8b24f57b3de4::t_25eade48a5fb17 1-31
+tools/ipc.py
+  s_fa8b24f57b3de4::t_3339980236498f 1-10
+tools/make_icon.swift
+  s_fa8b24f57b3de4::t_6ea1683fbaac93 1-68
+tools/set_default.swift
+  s_fa8b24f57b3de4::t_6dbd8a7fea31f5 1-37
+Package.swift
+  s_fa8b24f57b3de4::t_90f966a575e111 1-22
+Resources/Info.plist
+  s_fa8b24f57b3de4::t_431572ad8084f2 1-88
+Sources/CMpv/module.modulemap
+  s_fa8b24f57b3de4::t_ac657c5c37267b 1-5
+Sources/CMpv/shim.h
+  s_fa8b24f57b3de4::t_7000aa22e65d04 1-3
+Sources/Hush/main.swift
+  s_fa8b24f57b3de4::t_e00fa0cf7223d5 1-10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4b585d6746c824ebd70d1cb59344d5176aa32195",
+  "prompts": {},
+  "sessions": {
+    "s_b7be95dc006347": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "49aab1d4-0dbb-4505-8651-fd8f23f15632",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "wyf-ACCEPT <importwyf@gmail.com>"
+    },
+    "s_fa8b24f57b3de4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85d53c2b-2430-4d70-b01d-2e9a3a0d0943",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "wyf-ACCEPT <importwyf@gmail.com>"
+    }
+  }
+}
