@@ -1,0 +1,24 @@
+Sources/Hush/Theme.swift
+  s_fa8b24f57b3de4::t_8e65b0d53e61ab 272-273,276,278-279,282,286-287,291,294-332
+Sources/Hush/IdleView.swift
+  s_fa8b24f57b3de4::t_8e65b0d53e61ab 54-56,89-93
+Sources/Hush/PlayerWindowController.swift
+  s_fa8b24f57b3de4::t_8e65b0d53e61ab 480-483,488-553
+  s_fa8b24f57b3de4::t_ed30ca532f6de8 554
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0366eabe956593bffda5fcc4cbafd4973cbeee0f",
+  "prompts": {},
+  "sessions": {
+    "s_fa8b24f57b3de4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85d53c2b-2430-4d70-b01d-2e9a3a0d0943",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "wyf-ACCEPT <importwyf@gmail.com>"
+    }
+  }
+}
