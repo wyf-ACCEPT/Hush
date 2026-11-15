@@ -78,7 +78,7 @@ final class MPVController {
             ("osc", "no"),
             ("osd-bar", "no"),
             ("osd-font", "PingFang SC"),
-            ("osd-font-size", "30"),
+            ("osd-font-size", "22"),
             ("osd-border-size", "1.5"),
             ("input-default-bindings", "yes"),
             ("input-vo-keyboard", "yes"),

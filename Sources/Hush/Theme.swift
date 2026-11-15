@@ -349,7 +349,7 @@ enum SeekStep {
         }
     }
 
-    private static func number(_ v: Double) -> String {
+    static func number(_ v: Double) -> String {
         v == v.rounded() ? String(Int(v)) : String(format: "%g", v)
     }
 
@@ -357,4 +357,22 @@ enum SeekStep {
     static func label(_ v: Double) -> String { number(v) + "s" }
     /// Long form for menus and tooltips: "5 秒".
     static func phrase(_ v: Double) -> String { number(v) + " 秒" }
+}
+
+/// Volume step for ↑ / ↓ in percentage points (1–30, default 10); shared by all windows.
+enum VolumeStep {
+    static let range = 1...30
+    static let changed = Notification.Name("HushVolumeStepChanged")
+    private static let key = "volumeStep"
+
+    static var value: Int {
+        get {
+            let v = UserDefaults.standard.integer(forKey: key)
+            return range.contains(v) ? v : 10
+        }
+        set {
+            UserDefaults.standard.set(min(max(newValue, range.lowerBound), range.upperBound), forKey: key)
+            NotificationCenter.default.post(name: changed, object: nil)
+        }
+    }
 }

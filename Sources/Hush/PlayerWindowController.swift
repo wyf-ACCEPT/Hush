@@ -348,8 +348,8 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
     // Exact seeks: with long keyframe intervals a keyframe seek could jump far past a short step.
     @objc func seekForward(_ sender: Any?) { mpv.command(["seek", String(SeekStep.value), "relative+exact"]) }
     @objc func seekBackward(_ sender: Any?) { mpv.command(["seek", String(-SeekStep.value), "relative+exact"]) }
-    @objc func volumeUp(_ sender: Any?) { nudgeVolume(10) }
-    @objc func volumeDown(_ sender: Any?) { nudgeVolume(-10) }
+    @objc func volumeUp(_ sender: Any?) { nudgeVolume(Double(VolumeStep.value)) }
+    @objc func volumeDown(_ sender: Any?) { nudgeVolume(-Double(VolumeStep.value)) }
 
     /// mpv's own volume (not the system volume), clamped to 0–100%.
     private func nudgeVolume(_ delta: Double) {
@@ -481,7 +481,7 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
         excludedItem.submenu = excludedFoldersMenu()
         menu.addItem(excludedItem)
         menu.addItem(.separator())
-        menu.addItem(actionItem("键盘快捷键", #selector(showShortcuts(_:))))
+        menu.addItem(actionItem("设置与快捷键…", #selector(showShortcuts(_:))))
         popUp(menu, from: content.controlBar.settingsButton)
     }
 
@@ -594,27 +594,7 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
 
     @objc func toggleFullScreenAction(_ sender: Any?) { window?.toggleFullScreen(nil) }
 
-    @objc func showShortcuts(_ sender: Any?) {
-        guard let window else { return }
-        let alert = NSAlert()
-        alert.messageText = "键盘快捷键"
-        alert.informativeText = """
-        空格 — 播放 / 暂停
-        ← / → — 快退 / 快进 \(SeekStep.phrase(SeekStep.value))（控制栏「\(SeekStep.label(SeekStep.value))」按钮可改）
-        ↑ / ↓ — 音量 +/− 10%
-        滚轮上下 — 音量      滚轮左右 — 快退 / 快进 5 秒
-        [ / ] — 倍速 −/+ 0.05      { / } — 倍速 −/+ 0.25
-        Backspace — 倍速恢复 1.0
-        单击画面 — 播放 / 暂停      双击画面或 f — 全屏
-        Esc — 退出全屏      拖动画面 — 移动窗口
-        j — 切换字幕      v — 显示 / 隐藏字幕
-        # — 切换音轨      s — 截图（保存到桌面）
-        < / > — 播放列表上一个 / 下一个
-        ⌘N — 新建窗口（也可在 Dock 图标右键）
-        q — 关闭当前窗口（记住播放位置）
-        """
-        alert.beginSheetModal(for: window)
-    }
+    @objc func showShortcuts(_ sender: Any?) { SettingsWindowController.shared.show() }
 
     // MARK: Menu state
 
@@ -625,6 +605,10 @@ final class PlayerWindowController: NSWindowController, NSWindowDelegate, NSMenu
             let isPreset = AppDelegate.speedPresets.contains { abs($0 - mpv.speed) < 0.001 }
             item.title = isPreset ? "自定义…" : "自定义（\(Theme.speed(mpv.speed))）…"
             item.state = isPreset ? .off : .on
+        } else if item.action == #selector(volumeUp(_:)) {
+            item.title = "音量 +\(VolumeStep.value)%"
+        } else if item.action == #selector(volumeDown(_:)) {
+            item.title = "音量 −\(VolumeStep.value)%"
         } else if item.action == #selector(seekForward(_:)) {
             item.title = "快进 \(SeekStep.phrase(SeekStep.value))"
         } else if item.action == #selector(seekBackward(_:)) {

@@ -10,6 +10,10 @@ extension AppDelegate {
         let app = submenu(main, "Hush")
         app.addItem(withTitle: "关于 Hush", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
         app.addItem(.separator())
+        let settings = NSMenuItem(title: "设置…", action: #selector(showSettings(_:)), keyEquivalent: ",")
+        settings.target = self
+        app.addItem(settings)
+        app.addItem(.separator())
         app.addItem(withTitle: "隐藏 Hush", action: #selector(NSApplication.hide(_:)), keyEquivalent: "h")
         let hideOthers = app.addItem(withTitle: "隐藏其他", action: #selector(NSApplication.hideOtherApplications(_:)), keyEquivalent: "h")
         hideOthers.keyEquivalentModifierMask = [.command, .option]
@@ -92,7 +96,9 @@ extension AppDelegate {
 
         // Help
         let help = submenu(main, "帮助")
-        help.addItem(item("键盘快捷键", #selector(P.showShortcuts(_:)), "/"))
+        let shortcuts = NSMenuItem(title: "键盘快捷键", action: #selector(showSettings(_:)), keyEquivalent: "/")
+        shortcuts.target = self
+        help.addItem(shortcuts)
         NSApp.helpMenu = help
 
         return main

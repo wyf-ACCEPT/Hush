@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation, 
         newPlayer().open(launchURLs)
         launchURLs = []
         NSApp.activate(ignoringOtherApps: true)
+        // Debug: open the settings window at launch (for screenshots).
+        if ProcessInfo.processInfo.environment["HUSH_SHOW_SETTINGS"] != nil { showSettings(nil) }
     }
 
     // MARK: Windows
@@ -66,6 +68,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuItemValidation, 
         player.start()
         return player
     }
+
+    @objc func showSettings(_ sender: Any?) { SettingsWindowController.shared.show() }
 
     @objc func newWindow(_ sender: Any?) {
         newPlayer()
