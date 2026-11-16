@@ -1,4 +1,4 @@
-// Makes /Applications/Hush.app the default app for common video file extensions.
+// Makes /Applications/Hush.app the default app for common video file extensions (plus mp3).
 // webm is left to Chrome on purpose.
 // Usage: swift tools/set_default.swift [path/to/Hush.app]
 import AppKit
@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 
 let app = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "/Applications/Hush.app")
 let extensions = ["mp4", "m4v", "mov", "mkv", "avi", "flv", "f4v", "rmvb", "rm", "wmv",
-                  "ts", "m2ts", "mts", "mpg", "mpeg", "3gp", "ogv", "vob"]
+                  "ts", "m2ts", "mts", "mpg", "mpeg", "3gp", "ogv", "vob", "mp3"]
 
 // Resolve each extension to the content type this Mac actually uses (other players may
 // have registered their own UTI for e.g. mkv), and set the default per unique type.

@@ -48,7 +48,7 @@ The app links `/opt/homebrew/lib/libmpv.dylib` dynamically, so it only runs on a
 | `tools/ipc.py` | Talks to a running Hush started with `HUSH_IPC=/tmp/hush.sock` |
 | `Sources/Hush/Thumbnailer.swift` | Seek-bar previews: hidden second mpv per window, software renderer, keyframe then exact refine |
 | `tools/make_icon.swift` | Regenerates `Resources/AppIcon.icns` (sliced play triangle) |
-| `tools/set_default.swift` | Makes `/Applications/Hush.app` the default for 18 video extensions (webm stays with Chrome) |
+| `tools/set_default.swift` | Makes `/Applications/Hush.app` the default for 18 video extensions plus mp3 (webm stays with Chrome) |
 
 ## Design notes
 
